@@ -25,9 +25,15 @@ public class performRiding {
                 && hitResult == null
         ) {
             if (!level.isClientSide()) {
-                player.startRiding(entity, true, true);
-                return InteractionResult.SUCCESS;
+                // Prevent someone already inside this passenger tree from
+                // being attached to it again, which creates a circular loop.
+                if (entity == player || entity.hasIndirectPassenger(player)) {
+                    return InteractionResult.FAIL;
             }
+
+    player.startRiding(entity, true, true);
+    return InteractionResult.SUCCESS;
+}
         }
 
         return InteractionResult.PASS;
